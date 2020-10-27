@@ -1,18 +1,25 @@
 function avgfilter2d_setup(n, w = 3)
-    xs = rand(SVector{w,Int32}, n, n)
+    xs = rand(SVector{w,UInt8}, n, n)
     ys = zero(xs)
     return (; ys, xs)
 end
+
+# Not sure if it's relevant but intel's benchmark convert `unsigned char` to
+# `unsigned int` during the computation:
+# https://github.com/neboat/cilkbench/blob/063cba43f2b6276c913d3ad87c7ad3257fd4f813/intel/AveragingFilter_01_07_15/src/AveragingFilter.cpp#L61
+@inline u32(x::SVector{S}) where {S} = SVector{S,UInt32}(x)
+@inline u8(x::SVector{S}) where {S} = x .% UInt8
 
 #! format: off
 @inline function avg3x3(xs0, i, j)
     # xs = Const(xs0)
     xs = xs0
-    @inbounds (
-        xs[i-1,j-1] .+ xs[i,j-1] .+ xs[i+1,j-1] .+
-        xs[i-1,j  ] .+ xs[i,j  ] .+ xs[i+1,j  ] .+
-        xs[i-1,j+1] .+ xs[i,j+1] .+ xs[i+1,j+1]
+    y = @inbounds (
+        u32(xs[i-1,j-1]) .+ u32(xs[i,j-1]) .+ u32(xs[i+1,j-1]) .+
+        u32(xs[i-1,j  ]) .+ u32(xs[i,j  ]) .+ u32(xs[i+1,j  ]) .+
+        u32(xs[i-1,j+1]) .+ u32(xs[i,j+1]) .+ u32(xs[i+1,j+1])
     ) .÷ 9
+    return u8(y)
 end
 #! format: on
 
