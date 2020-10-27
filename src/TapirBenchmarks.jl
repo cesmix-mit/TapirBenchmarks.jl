@@ -13,6 +13,7 @@ export avgfilter1d_seq!,
 
 using Base: Tapir
 using Base.Experimental: Const, @aliasscope
+using StaticArrays: SVector
 
 macro grainsize(n::Integer)
     Expr(:loopinfo, (Symbol("tapir.loop.grainsize"), Int(n)))

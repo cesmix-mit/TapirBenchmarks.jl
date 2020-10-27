@@ -1,5 +1,5 @@
-function avgfilter2d_setup(n)
-    xs = rand(UInt8, n, n)
+function avgfilter2d_setup(n, w = 3)
+    xs = rand(SVector{w,Int32}, n, n)
     ys = zero(xs)
     return (; ys, xs)
 end
@@ -9,10 +9,10 @@ end
     # xs = Const(xs0)
     xs = xs0
     @inbounds (
-        xs[i-1,j-1] + xs[i,j-1] + xs[i+1,j-1] +
-        xs[i-1,j  ] + xs[i,j  ] + xs[i+1,j  ] +
-        xs[i-1,j+1] + xs[i,j+1] + xs[i+1,j+1]
-    ) ÷ 9
+        xs[i-1,j-1] .+ xs[i,j-1] .+ xs[i+1,j-1] .+
+        xs[i-1,j  ] .+ xs[i,j  ] .+ xs[i+1,j  ] .+
+        xs[i-1,j+1] .+ xs[i,j+1] .+ xs[i+1,j+1]
+    ) .÷ 9
 end
 #! format: on
 
@@ -63,7 +63,7 @@ function avgfilter2d_tapir_dac!(ys, xs)
                     i = firstindex(xs, 1) + i0 + 1
                     @inbounds ys[i, j] = avg3x3(xs, i, j)
                 end
-                @grainsize 1024
+                @grainsize 64
             end
         end
     end
@@ -83,7 +83,7 @@ function avgfilter2d_tapir_dac_nopreserve!(ys, xs)
                     i = firstindex(xs, 1) + i0 + 1
                     @inbounds ys[i, j] = avg3x3(xs, i, j)
                 end
-                @grainsize 1024
+                @grainsize 64
             end
         end
     end
@@ -103,7 +103,7 @@ function avgfilter2d_tapir_seq!(ys, xs)
                     i = firstindex(xs, 1) + i0 + 1
                     @inbounds ys[i, j] = avg3x3(xs, i, j)
                 end
-                @grainsize 1024
+                @grainsize 64
             end
         end
     end

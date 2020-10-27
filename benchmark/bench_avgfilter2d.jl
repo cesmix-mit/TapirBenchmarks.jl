@@ -8,7 +8,7 @@ Random.seed!(1234)
 
 const SUITE = BenchmarkGroup()
 
-for n in [2^13, 2^15]
+for n in [2^9, 2^11]
     SUITE[:n=>n] = s0 = BenchmarkGroup()
     ys0, xs = avgfilter2d_setup(n)
     s0[:impl=>:seq] = @benchmarkable avgfilter2d_seq!($(copy(ys0)), $xs)
