@@ -5,6 +5,11 @@ export avgfilter1d_seq!,
     avgfilter1d_tapir_dac!,
     avgfilter1d_tapir_seq!,
     avgfilter1d_threads!,
+    avgfilter1d_constprop_seq!,
+    avgfilter1d_constprop_setup,
+    avgfilter1d_constprop_tapir_dac!,
+    avgfilter1d_constprop_tapir_seq!,
+    avgfilter1d_constprop_threads!,
     avgfilter2d_seq!,
     avgfilter2d_setup,
     avgfilter2d_tapir_dac!,
@@ -38,5 +43,6 @@ end
 
 include("avgfilter1d.jl")
 include("avgfilter2d.jl")
+include("avgfilter1d_constprop.jl")
 
 end

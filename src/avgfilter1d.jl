@@ -1,5 +1,5 @@
 function avgfilter1d_setup(n, w = 3)
-    xs = rand(SVector{w,Int32}, n)
+    xs = rand(SVector{w,UInt8}, n)
     ys = zero(xs)
     return (; ys, xs)
 end
