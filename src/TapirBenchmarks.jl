@@ -1,11 +1,7 @@
 module TapirBenchmarks
 
-export
-    avgfilter1d_seq!,
-    avgfilter1d_setup,
-    avgfilter1d_tapir_dac!,
-    avgfilter1d_tapir_seq!,
-    avgfilter1d_threads!
+export avgfilter1d_seq!,
+    avgfilter1d_setup, avgfilter1d_tapir_dac!, avgfilter1d_tapir_seq!, avgfilter1d_threads!
 
 using Base: Tapir
 
