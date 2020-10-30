@@ -39,36 +39,20 @@ end
 # "outer" 2-arg function.
 @inline function avgfilter1d_constprop_tapir_dac!(ys, xs, N = 4)
     @assert axes(ys) == axes(xs)
-    GC.@preserve ys xs begin  # TODO: don't use preserve
-        Tapir.@par dac for i0 in 0:length(xs) - N
-            i = firstindex(xs) + i0
-            @inbounds ys[i] = avg_at(xs, i, N)
-            @grainsize 131072
-        end
-    end
-    return ys
-end
-
-@inline function avgfilter1d_constprop_tapir_dac_nopreserve!(ys, xs, N = 4)
-    @assert axes(ys) == axes(xs)
-    begin
-        Tapir.@par dac for i0 in 0:length(xs) - N
-            i = firstindex(xs) + i0
-            @inbounds ys[i] = avg_at(xs, i, N)
-            @grainsize 131072
-        end
+    Tapir.@par dac for i0 in 0:length(xs) - N
+        i = firstindex(xs) + i0
+        @inbounds ys[i] = avg_at(xs, i, N)
+        @grainsize 131072
     end
     return ys
 end
 
 @inline function avgfilter1d_constprop_tapir_seq!(ys, xs, N = 4)
     @assert axes(ys) == axes(xs)
-    GC.@preserve ys xs begin  # TODO: don't use preserve
-        Tapir.@par seq for i0 in 0:length(xs) - N
-            i = firstindex(xs) + i0
-            @inbounds ys[i] = avg_at(xs, i, N)
-            @grainsize 131072
-        end
+    Tapir.@par seq for i0 in 0:length(xs) - N
+        i = firstindex(xs) + i0
+        @inbounds ys[i] = avg_at(xs, i, N)
+        @grainsize 131072
     end
     return ys
 end

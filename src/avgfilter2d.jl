@@ -62,35 +62,14 @@ function avgfilter2d_tapir_dac!(ys, xs)
     @assert axes(ys) == axes(xs)
     n = size(xs)[1] - 2
     m = size(xs)[2] - 2
-    GC.@preserve ys xs begin  # TODO: don't use preserve
-        @maybe_aliasscope begin
-            Tapir.@par dac for j0 in 0:m-1
-                j = firstindex(xs, 2) + j0 + 1
-                for i0 in 0:n-1
-                    i = firstindex(xs, 1) + i0 + 1
-                    @inbounds ys[i, j] = avg3x3(xs, i, j)
-                end
-                @grainsize 64
+    @maybe_aliasscope begin
+        Tapir.@par dac for j0 in 0:m-1
+            j = firstindex(xs, 2) + j0 + 1
+            for i0 in 0:n-1
+                i = firstindex(xs, 1) + i0 + 1
+                @inbounds ys[i, j] = avg3x3(xs, i, j)
             end
-        end
-    end
-    return ys
-end
-
-function avgfilter2d_tapir_dac_nopreserve!(ys, xs)
-    @assert axes(ys) == axes(xs)
-    n = size(xs)[1] - 2
-    m = size(xs)[2] - 2
-    begin
-        @maybe_aliasscope begin
-            Tapir.@par dac for j0 in 0:m-1
-                j = firstindex(xs, 2) + j0 + 1
-                for i0 in 0:n-1
-                    i = firstindex(xs, 1) + i0 + 1
-                    @inbounds ys[i, j] = avg3x3(xs, i, j)
-                end
-                @grainsize 64
-            end
+            @grainsize 64
         end
     end
     return ys
@@ -100,16 +79,14 @@ function avgfilter2d_tapir_seq!(ys, xs)
     @assert axes(ys) == axes(xs)
     n = size(xs)[1] - 2
     m = size(xs)[2] - 2
-    GC.@preserve ys xs begin  # TODO: don't use preserve
-        @maybe_aliasscope begin
-            Tapir.@par seq for j0 in 0:m-1
-                j = firstindex(xs, 2) + j0 + 1
-                for i0 in 0:n-1
-                    i = firstindex(xs, 1) + i0 + 1
-                    @inbounds ys[i, j] = avg3x3(xs, i, j)
-                end
-                @grainsize 64
+    @maybe_aliasscope begin
+        Tapir.@par seq for j0 in 0:m-1
+            j = firstindex(xs, 2) + j0 + 1
+            for i0 in 0:n-1
+                i = firstindex(xs, 1) + i0 + 1
+                @inbounds ys[i, j] = avg3x3(xs, i, j)
             end
+            @grainsize 64
         end
     end
     return ys
