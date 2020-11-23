@@ -1,2 +1,3 @@
-Manifest.toml
+/benchmark/*.json
 /src/config.jl
+Manifest.toml
