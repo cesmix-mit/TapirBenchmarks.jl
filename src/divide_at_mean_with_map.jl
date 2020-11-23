@@ -1,5 +1,5 @@
 function divide_at_mean_seq(f, xs0)
-    xs = copy(xs0)
+    xs = similar(xs0)
     for i in eachindex(xs0, xs)
         @inbounds xs[i] = f(xs0[i])
     end
@@ -20,7 +20,7 @@ function divide_at_mean_seq(f, xs0)
 end
 
 function divide_at_mean_threads(f, xs0)
-    xs = copy(xs0)
+    xs = similar(xs0)
     ThreadsFolds.tforeach(eachindex(xs0, xs)) do i
         @inbounds xs[i] = f(xs0[i])
     end
@@ -41,7 +41,7 @@ function divide_at_mean_threads(f, xs0)
 end
 
 function divide_at_mean_tapir(f, xs0)
-    xs = copy(xs0)
+    xs = similar(xs0)
     TapirFolds.tforeach(eachindex(xs0, xs)) do i
         @inbounds xs[i] = f(xs0[i])
     end
