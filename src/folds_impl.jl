@@ -54,6 +54,11 @@ function tmap(f::F, xs; kw...) where {F}
     end
 end
 
+function tforeach(f::F, xs; kw...) where {F}
+    mapfold(f, (_, _) -> nothing, xs; kw...)
+    return
+end
+
 
 sum(f::F, xs) where {F} = mapfold(f, +, xs)
 sum(xs) = sum(identity, xs)

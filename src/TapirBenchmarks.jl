@@ -55,5 +55,6 @@ include("avgfilter2d.jl")
 include("avgfilter1d_constprop.jl")
 include("meanvar.jl")
 include("divide_at_mean.jl")
+include("divide_at_mean_with_map.jl")
 
 end
