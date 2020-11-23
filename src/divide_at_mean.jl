@@ -15,8 +15,8 @@ function divide_at_mean_seq(xs)
     return resize!(smaller, n_smaller), resize!(larger, n_larger)
 end
 
-function divide_at_mean_tapir(xs)
-    m = TapirFolds.mean(xs)
+function divide_at_mean_threads(xs)
+    m = ThreadsFolds.mean(xs)
     larger = Vector{Int}(undef, length(xs))
     smaller = Vector{Int}(undef, length(xs))
     n_larger = 0
@@ -32,8 +32,8 @@ function divide_at_mean_tapir(xs)
     return resize!(smaller, n_smaller), resize!(larger, n_larger)
 end
 
-function divide_at_mean_threads(xs)
-    m = ThreadsFolds.mean(xs)
+function divide_at_mean_tapir(xs)
+    m = TapirFolds.mean(xs)
     larger = Vector{Int}(undef, length(xs))
     smaller = Vector{Int}(undef, length(xs))
     n_larger = 0
