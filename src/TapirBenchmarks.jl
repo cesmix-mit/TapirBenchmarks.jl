@@ -22,10 +22,37 @@ export avgfilter1d_seq!,
     meanvar_tapir,
     meanvar_threads
 
-using Base: Tapir
 using Base.Experimental: Const
 using StaticArrays: SVector
 using Statistics: mean, var
+
+baremodule Tapir
+import Base
+using Base.Experimental.Tapir: @sync, @spawn
+const OPENCILK = isdefined(Base.Experimental.Tapir, Symbol("@par"))
+macro adhoc_par end
+const var"@par" = if OPENCILK
+    Base.Experimental.Tapir.var"@par"
+else
+    var"@adhoc_par"
+end
+end # baremodule Tapir
+import .Tapir: @adhoc_par
+
+macro adhoc_par(strategy_ignored, ex = nothing)
+    expr = something(ex, strategy_ignored)
+    body = expr.args[2]
+    lhs = expr.args[1].args[1]
+    range = expr.args[1].args[2]
+    @gensym chunk
+    quote
+        $Tapir.@sync for $chunk in $Iterators.partition($(range), $Threads.nthreads())
+            $Tapir.@spawn for $lhs in $chunk
+                $body
+            end
+        end
+    end |> esc
+end
 
 macro grainsize(n::Integer)
     Expr(:loopinfo, (Symbol("tapir.loop.grainsize"), Int(n)))

@@ -4,7 +4,7 @@ const Output = Ref{Any}
 end
 
 module TapirFolds
-using Base: Tapir
+using Base.Experimental: Tapir
 include("folds_impl.jl")
 end
 

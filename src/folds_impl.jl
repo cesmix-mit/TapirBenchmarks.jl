@@ -23,13 +23,12 @@ function _mapfold(f::F, op::OP, xs, basesize) where {F,OP}
     else
         left = @inbounds @view xs[begin:(end-begin+1)÷2]
         right = @inbounds @view xs[(end-begin+1)÷2+1:end]
-        ref = Tapir.Output()
-        local y
+        local y, z
         Tapir.@sync begin
-            Tapir.@spawn ref[] = _mapfold(f, op, right, basesize)
+            Tapir.@spawn z = _mapfold(f, op, right, basesize)
             y = _mapfold(f, op, left, basesize)
         end
-        return op(y, ref[])
+        return op(y, z)
     end
 end
 
