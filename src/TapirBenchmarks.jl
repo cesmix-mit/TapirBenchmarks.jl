@@ -46,7 +46,10 @@ macro adhoc_par(strategy_ignored, ex = nothing)
     range = expr.args[1].args[2]
     @gensym chunk
     quote
-        $Tapir.@sync for $chunk in $Iterators.partition($(range), $Threads.nthreads())
+        $Tapir.@sync for $chunk in $Iterators.partition(
+            $(range),
+            $cld($length($(range)), $Threads.nthreads()),
+        )
             $Tapir.@spawn for $lhs in $chunk
                 $body
             end
